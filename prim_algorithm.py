@@ -98,6 +98,7 @@ def get_tree(distancevector):
         i = i+1
 
     return mst_size
+
 def draw_gridgraph(Tx,Ty,mst):
     i = 1
     while i in range(len(mst)):
@@ -106,7 +107,7 @@ def draw_gridgraph(Tx,Ty,mst):
         Sy = Ty[u.vertex_id]
         destx = Tx[mst[i].vertex_id]
         desty = Ty[mst[i].vertex_id]
-        gd.figure_plot(Sx, Sy, destx, desty)
+        gd.figure_plot(Sx, Sy, destx, desty, u.vertex_id, mst[i].vertex_id)
         i = i+1
     plot.show()
 

@@ -66,9 +66,11 @@ def  draw_gridgraph(start, end, n):
             figure_plot(Sx[i], Sy[i], destx, desty)
     plot.show()
 
-def figure_plot(x, y, destx, desty):
+def figure_plot(x, y, destx, desty, a, b):
     plot.scatter(x, y)
     plot.scatter(destx, desty)
+    plot.annotate(a, (x, y))
+    plot.annotate(b, (destx, desty))
     plot.plot([x, destx], [y, y])
     plot.plot([destx, destx], [y, desty])
 

@@ -55,24 +55,21 @@ def pigeon_optimization(Objbest,p,iteration):
         p.Xp = Xpnew
         p.Yp = Ypnew
 
-
-
-
-
 def get_fitness(Tx, Ty, pigeon):
     for i in range(len(pigeon.Sx)):
         Tx.append(pigeon.Sx[i])
         Ty.append(pigeon.Sy[i])
-    distancevector = gd.get_distancevector(Tx,Ty)
+    distancevector = gd.get_distancevector(Tx, Ty)
     objectivefitness = pa.get_tree(distancevector)
     return objectivefitness
 
 def pigeon_test(Tx,Ty):
     pigeons = []
+    global objfitness
     n = random.randint(0,10)
     for i in range(n):
-        Sx = gd.get_xdata(0,500,98)
-        Sy = gd.get_ydata(0,500,98)
+        Sx = gd.get_xdata(0,500, 98)
+        Sy = gd.get_ydata(0,500, 98)
         Xs = reduce((lambda x,y: x+y), Sx) // len(Sx)
         Ys = reduce((lambda x,y: x+y), Sy) // len(Sy)
         pigeon = Pigeon(Sx, Sy, 0, Xs, Ys)
@@ -83,20 +80,21 @@ def pigeon_test(Tx,Ty):
         for j in range(len(pigeons)):
             mst = get_fitness(Tx,Ty,pigeons[j])
             objfitness.append(mst)
-            Tx = Tx[0:len(Tx)- len(pigeons[j].Sx)]
+            Tx = Tx[0:len(Tx) - len(pigeons[j].Sx)]
+            #print(Tx)
             Ty = Ty[0:len(Ty) - len(pigeons[j].Sy)]
+            #print(Ty)
         best_obj_fitness = get_min_item(objfitness).minitem
 
         for j in range(len(pigeons)):
-            pigeon = pigeons[j]
-            print(pigeon.Xp,",",pigeon.Yp)
+
             pigeon_optimization(best_obj_fitness, pigeons[j], i)
 
-        for j in range(len(pigeons)):
-            print(pigeons[j].Xp)
-            print(pigeons[j].Yp)
-
     pigeon_best = pigeons[get_min_item(objfitness).item_id]
+    print(pigeon_best.Sx)
+    print(pigeon_best.Sy)
+    print(Tx)
+    print(Ty)
     return pigeon_best
 
 

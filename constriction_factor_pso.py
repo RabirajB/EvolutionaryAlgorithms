@@ -1,4 +1,4 @@
-#program to demonstrate particle swarm optimization algorithm
+#program to demonstrate constriction factor based particle swarm optimization algorithm
 import random
 import gridgraphdemo as gd
 import prim_algorithm as pa
@@ -29,14 +29,15 @@ def get_min_item(arr):
     item = Min_Item(min, index)
     return item
 
-def particle_swarm_optimization(objgbest, p, objpbest):
+def constriction_factor_particle_swarm_optimization(objgbest, p, objpbest):
     gbest = math.ceil(1/objgbest)
     pbest = math.ceil(1/objpbest)
-    Vx = p.V + 2 * random.randint(0,1) * (pbest - p.Xp) + 2 * random.randint (0,1) * (gbest - p.Xp)
-   # print(Vx)
-    Vy = p.V + 2 * random.randint(0,1) * (pbest - p.Yp) + 2 * random.randint (0,1) * (gbest - p.Yp)
-   # print(Vy)
-    Vnew = (Vx + Vy)//2
+    k = 0.729
+    Vx = k*(p.V + 2.05 * random.randint(0,1) * (pbest - p.Xp) + 2 * random.randint (0,1) * (gbest - p.Xp))
+    #print(Vx)
+    Vy = k*(p.V + 2.05 * random.randint(0,1) * (pbest - p.Yp) + 2 * random.randint (0,1) * (gbest - p.Yp))
+    #print(Vy)
+    Vnew = math.ceil((Vx + Vy))//2
     Sxnew = list(map(lambda x: x + Vx, p.Sx))
     Synew = list(map(lambda y: y + Vy, p.Sy))
     Xpnew = reduce((lambda x, y: x + y), Sxnew) // len(p.Sx)
@@ -64,7 +65,7 @@ def get_fitness(Tx, Ty, particle):
     objfitness = pa.get_tree(distancevector)
     return objfitness
 
-def particle_swarm_test(Tx, Ty):
+def constriction_factor_particle_swarm_test(Tx, Ty):
     particles = []
     global objfitness
     n = random.randint(0,10)
@@ -84,7 +85,7 @@ def particle_swarm_test(Tx, Ty):
             Ty = Ty[0:len(Ty) - len(particles[j].Sy)]
         best_obj_fitness = get_min_item(objfitness).minitem
         for j in range(len(particles)):
-            particle_swarm_optimization(best_obj_fitness, particles[j], objfitness[j])
+            constriction_factor_particle_swarm_optimization(best_obj_fitness, particles[j], objfitness[j])
             print(particles[j].Sx)
             print(particles[j].Sy)
     particle_best = particles[get_min_item(objfitness).item_id]
