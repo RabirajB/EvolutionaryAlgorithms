@@ -4,8 +4,8 @@ import pigeon_optimization_algorithm as poa
 import particle_swarm_optimization as pso
 import constriction_factor_pso as cpso
 
-Tx = gd.get_xdata(0, 500, 100)
-Ty = gd.get_ydata(0, 500, 100)
+Tx = gd.get_xdata(0, 500, 10)
+Ty = gd.get_ydata(0, 500, 10)
 
 print("X Coordinates", Tx)
 print("Y Coordinates", Ty)
@@ -52,8 +52,8 @@ Tx = Tx[0:len(Tx) - len(bestparticle1.Sx)]
 Ty = Ty[0:len(Ty) - len(bestparticle1.Sy)]
 print("Updated X coordinates", Tx)
 print("Updated Y coordinates", Ty)
-print("X coordinates of best particle" , bestparticle1.Sx)
-print("Y coordinates of best particle" , bestparticle1.Sy)
+print("X coordinates of best particle", bestparticle1.Sx)
+print("Y coordinates of best particle", bestparticle1.Sy)
 count = 0
 for i in range(len(bestparticle1.Sx)):
     if bestparticle1.Sx[i] < min(Tx) or bestparticle1.Sx[i] > max(Tx):

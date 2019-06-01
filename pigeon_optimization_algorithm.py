@@ -31,18 +31,18 @@ def get_min_item(arr):
 
 def pigeon_optimization(Objbest,p,iteration):
     fitnessbest = math.ceil(1/Objbest)
-    Vx = p.V * 3**(random.randint(0,1)*iteration) + random.randint(0, 1) * (fitnessbest- p.Xp)
+    Vx = p.V * math.e**(random.randint(0,1)*iteration) + random.randint(0, 1) * (fitnessbest- p.Xp)
     #print("x velocity=",Vx)
-    Vy = p.V * 3**(random.randint(0,1)*iteration) + random.randint(0, 1) * (fitnessbest- p.Yp)
+    Vy = p.V * math.e**(random.randint(0,1)*iteration) + random.randint(0, 1) * (fitnessbest- p.Yp)
     #print("Y velocity",Vy)
-    Vnew = (Vx + Vy)//2
+    Vnew = math.ceil((Vx + Vy))//2
     p.V = Vnew
 
     Sxnew = list(map(lambda x: x + Vx, p.Sx))
     Synew = list(map(lambda y: y + Vy, p.Sy))
-    Xpnew = reduce((lambda x,y: x+y),Sxnew) // len(p.Sx)
-    Ypnew = reduce((lambda x, y: x + y),Synew) // len(p.Sy)
-    if Xpnew < 0 or Xpnew > 500 or Ypnew < 0 or Ypnew >500:
+    Xpnew = reduce((lambda x, y: x + y), Sxnew) // len(p.Sx)
+    Ypnew = reduce((lambda x, y: x + y), Synew) // len(p.Sy)
+    if Xpnew < 0 or Xpnew > 500 or Ypnew < 0 or Ypnew > 500:
         p.Sx = p.Sx
         p.Sy = p.Sy
         p.V = p.V
@@ -68,8 +68,8 @@ def pigeon_test(Tx,Ty):
     global objfitness
     n = random.randint(0,10)
     for i in range(n):
-        Sx = gd.get_xdata(0,500, 98)
-        Sy = gd.get_ydata(0,500, 98)
+        Sx = gd.get_xdata(0, 500, 8)
+        Sy = gd.get_ydata(0, 500, 8)
         Xs = reduce((lambda x,y: x+y), Sx) // len(Sx)
         Ys = reduce((lambda x,y: x+y), Sy) // len(Sy)
         pigeon = Pigeon(Sx, Sy, 0, Xs, Ys)
@@ -78,19 +78,20 @@ def pigeon_test(Tx,Ty):
     for i in range(20):
         objfitness = []
         for j in range(len(pigeons)):
-            mst = get_fitness(Tx,Ty,pigeons[j])
+
+            mst = get_fitness(Tx, Ty, pigeons[j])
             objfitness.append(mst)
             Tx = Tx[0:len(Tx) - len(pigeons[j].Sx)]
             #print(Tx)
             Ty = Ty[0:len(Ty) - len(pigeons[j].Sy)]
             #print(Ty)
-        best_obj_fitness = get_min_item(objfitness).minitem
+        best_obj_fitness = min(objfitness)
 
         for j in range(len(pigeons)):
 
             pigeon_optimization(best_obj_fitness, pigeons[j], i)
 
-    pigeon_best = pigeons[get_min_item(objfitness).item_id]
+    pigeon_best = pigeons[objfitness.index(min(objfitness))]
     print(pigeon_best.Sx)
     print(pigeon_best.Sy)
     print(Tx)
