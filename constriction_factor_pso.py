@@ -19,23 +19,15 @@ class Particle:
         self.Xp = Xp
         self.Yp = Yp
 
-def get_min_item(arr):
-    min = math.inf
-    index = 0
-    for i in range(len(arr)):
-        if arr[i] < min:
-            min = arr[i]
-            index = i
-    item = Min_Item(min, index)
-    return item
+
 
 def constriction_factor_particle_swarm_optimization(objgbest, p, objpbest):
     gbest = math.ceil(1/objgbest)
     pbest = math.ceil(1/objpbest)
     k = 0.729
-    Vx = k*(p.V + 2.05 * random.randint(0,1) * (pbest - p.Xp) + 2 * random.randint (0,1) * (gbest - p.Xp))
+    Vx = k*(p.V + 2 * random.randint(0,1) * (pbest - p.Xp) + 2 * random.randint (0,1) * (gbest - p.Xp))
     #print(Vx)
-    Vy = k*(p.V + 2.05 * random.randint(0,1) * (pbest - p.Yp) + 2 * random.randint (0,1) * (gbest - p.Yp))
+    Vy = k*(p.V + 2 * random.randint(0,1) * (pbest - p.Yp) + 2 * random.randint (0,1) * (gbest - p.Yp))
     #print(Vy)
     Vnew = math.ceil((Vx + Vy))//2
     Sxnew = list(map(lambda x: x + Vx, p.Sx))
@@ -67,29 +59,36 @@ def get_fitness(Tx, Ty, particle):
 
 def constriction_factor_particle_swarm_test(Tx, Ty):
     particles = []
-    global objfitness
-    n = random.randint(0,10)
+    pbestvector = []
+
+    # global objfitness
+    n = random.randint(0, 10)
     for i in range(n):
         Sx = gd.get_xdata(0, 500, 98)
         Sy = gd.get_ydata(0, 500, 98)
-        Xs = reduce((lambda x, y: x+y), Sx) // len(Sx)
-        Ys = reduce((lambda x, y: x+y), Sy) // len(Sy)
+        Xs = reduce((lambda x, y: x + y), Sx) // len(Sx)
+        Ys = reduce((lambda x, y: x + y), Sy) // len(Sy)
         particle = Particle(Sx, Sy, 0, Xs, Ys)
         particles.append(particle)
+        pbestvector.append(math.inf)
     for i in range(20):
-        objfitness = []
+        # objfitness = []
+
         for j in range(len(particles)):
             mst = get_fitness(Tx, Ty, particles[j])
-            objfitness.append(mst)
+            if mst < pbestvector[j]:
+                pbestvector[j] = mst
             Tx = Tx[0:len(Tx) - len(particles[j].Sx)]
             Ty = Ty[0:len(Ty) - len(particles[j].Sy)]
-        best_obj_fitness = get_min_item(objfitness).minitem
+        best_obj_fitness = min(pbestvector)
         for j in range(len(particles)):
-            constriction_factor_particle_swarm_optimization(best_obj_fitness, particles[j], objfitness[j])
-            print(particles[j].Sx)
-            print(particles[j].Sy)
-    particle_best = particles[get_min_item(objfitness).item_id]
+            print("X-Coordinates", particles[j].Sx)
+            print("Y-Coordinates", particles[j].Sy)
+            constriction_factor_particle_swarm_optimization(best_obj_fitness, particles[j], pbestvector[j])
+
+    particle_best = particles[pbestvector.index(min(pbestvector))]
     return particle_best
+
 
 
 
