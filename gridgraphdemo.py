@@ -36,6 +36,7 @@ def get_distancevector(Tx,Ty):
         x = Tx[i]
         y = Ty[i]
         for j in range(len(Tx)):
+
             #print("Difference between x-coordinates=", abs(x - Tx[j]))
             #print("Difference between y-coordinates=", abs(y - Ty[j]))
             d = abs(x - Tx[j]) + abs(y - Ty[j])

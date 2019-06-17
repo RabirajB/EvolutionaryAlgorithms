@@ -5,13 +5,9 @@ import prim_algorithm as pa
 from functools import reduce
 import math
 
-class Min_Item:
-    def __init__(self, minitem,  item_id):
-        self.minitem = minitem
-        self.item_id = item_id
 
 class Particle:
-    #class used to initialize a pigeon
+    #class used to initialize a particle
     def __init__(self, Sx, Sy, V, Xp, Yp):
         self.Sx = Sx
         self.Sy = Sy
@@ -19,22 +15,13 @@ class Particle:
         self.Xp = Xp
         self.Yp = Yp
 
-def get_min_item(arr):
-    min = math.inf
-    index = 0
-    for i in range(len(arr)):
-        if arr[i] < min:
-            min = arr[i]
-            index = i
-    item = Min_Item(min, index)
-    return item
-
 def particle_swarm_optimization(objgbest, p, objpbest):
+    #Method for particle Swarm Optimization test
     gbest = math.ceil(1/objgbest)
     pbest = math.ceil(1/objpbest)
-    Vx = p.V + 2 * random.randint(0,1) * (pbest - p.Xp) + 2 * random.randint (0,1) * (gbest - p.Xp)
+    Vx = p.V + 2 * random.randint(0,1) * (pbest - p.Xp) + 2 * random.randint(0, 1) * (gbest - p.Xp)
    # print(Vx)
-    Vy = p.V + 2 * random.randint(0,1) * (pbest - p.Yp) + 2 * random.randint (0,1) * (gbest - p.Yp)
+    Vy = p.V + 2 * random.randint(0,1) * (pbest - p.Yp) + 2 * random.randint(0, 1) * (gbest - p.Yp)
    # print(Vy)
     Vnew = (Vx + Vy)//2
     Sxnew = list(map(lambda x: x + Vx, p.Sx))
@@ -58,16 +45,24 @@ def particle_swarm_optimization(objgbest, p, objpbest):
 
 def get_fitness(Tx, Ty, particle):
     for i in range(len(particle.Sx)):
+        if particle.Sx[i] < min(Tx) or particle.Sx[i] > max(Tx):
+            continue
+        if particle.Sy[i] < min(Ty) or particle.Sy[i] > max(Ty):
+            continue
         Tx.append(particle.Sx[i])
         Ty.append(particle.Sy[i])
-    distancevector = gd.get_distancevector(Tx,Ty)
-    objfitness = pa.get_tree(distancevector)
-    return objfitness
+
+    distancevector = gd.get_distancevector(Tx, Ty)
+    objectivefitness = pa.get_tree(distancevector)
+    return objectivefitness
 
 def particle_swarm_test(Tx, Ty):
     particles = []
-    global objfitness
-    n = random.randint(0,10)
+    pbestvector = []
+    lenTx = len(Tx)
+    lenTy = len(Ty)
+    #global objfitness
+    n = random.randint(0, 10)
     for i in range(n):
         Sx = gd.get_xdata(0, 500, 98)
         Sy = gd.get_ydata(0, 500, 98)
@@ -75,22 +70,74 @@ def particle_swarm_test(Tx, Ty):
         Ys = reduce((lambda x, y: x+y), Sy) // len(Sy)
         particle = Particle(Sx, Sy, 0, Xs, Ys)
         particles.append(particle)
+        pbestvector.append(math.inf)
     for i in range(20):
-        objfitness = []
+        #objfitness = []
+
         for j in range(len(particles)):
             mst = get_fitness(Tx, Ty, particles[j])
-            objfitness.append(mst)
-            Tx = Tx[0:len(Tx) - len(particles[j].Sx)]
-            Ty = Ty[0:len(Ty) - len(particles[j].Sy)]
-        best_obj_fitness = get_min_item(objfitness).minitem
+            if mst < pbestvector[j]:
+                pbestvector[j] = mst
+            Rx = Tx[0:len(Tx) - lenTx]
+            Ry = Tx[0:len(Tx) - lenTy]
+            Tx = Tx[0:len(Tx) - len(Rx)]
+            Ty = Tx[0:len(Ty) - len(Ry)]
+        best_obj_fitness = min(pbestvector)
         for j in range(len(particles)):
-            particle_swarm_optimization(best_obj_fitness, particles[j], objfitness[j])
-            print(particles[j].Sx)
-            print(particles[j].Sy)
-    particle_best = particles[get_min_item(objfitness).item_id]
+            particle_swarm_optimization(best_obj_fitness, particles[j], pbestvector[j])
+            #print("X Coordinates of particle",particles[j].Sx)
+            #print("Y Coordinates of particle",particles[j].Sy)
+    particle_best = particles[pbestvector.index(min(pbestvector))]
     return particle_best
 
 
+#Calling the respective modules
+def call_methods(Tx,Ty,lenTx,lenTy):
+    '''
+    lenTx = len(Tx)
+    lenTy = len(Ty)
+    '''
+    Rx = Tx[0:len(Tx) - lenTx]
+    Ry = Ty[0:len(Tx) - lenTy]
+    Tx = Tx[0:len(Tx) - len(Rx)]
+    Ty = Ty[0:len(Ty) - len(Ry)]
+    print("X coordinates =", Tx)
+    print("Y coordinates =", Ty)
+
+    bestparticle = particle_swarm_test(Tx, Ty)
+    Rx = Tx[0:len(Tx) - lenTx]
+    Ry = Ty[0:len(Ty) - lenTy]
+    Tx = Tx[0:len(Tx) - len(Rx)]
+    Ty = Ty[0:len(Ty) - len(Ry)]
+    #print("Updated X coordinates", Tx)
+    #print("Updated Y coordinates", Ty)
+    print("X coordinates of best particle", bestparticle.Sx)
+    print("Y coordinates of best particle", bestparticle.Sy)
+    print("Updated X coordinates", Tx)
+    print("Updated Y Coordinates", Ty)
+    count = 0
+    for i in range(len(bestparticle.Sx)):
+        if bestparticle.Sx[i] < min(Tx) or bestparticle.Sx[i] > max(Tx):
+            continue
+        if bestparticle.Sy[i] < min(Ty) or bestparticle.Sy[i] > max(Ty):
+            continue
+
+        Tx.append(bestparticle.Sx[i])
+        Ty.append(bestparticle.Sy[i])
+        count = count + 1
+    print("Updated X Coordinates", Tx)
+    print("Updated Y Coordinates", Ty)
+    distancevector = gd.get_distancevector(Tx, Ty)
+    mst = pa.mst_prim(distancevector)
+    mst_size = pa.get_tree(distancevector)
+    print("Size of Steiner Tree for PSO", mst_size)
+    pa.draw_gridgraph(Tx, Ty, mst)
+
+    Tx = Tx[0:len(Tx) - count]
+    Ty = Ty[0:len(Ty) - count]
+    print("Restored X Coordinates=", Tx)
+    print("Restored Y Coordinates=", Ty)
+    print("End of PSO")
 
 
 
@@ -102,6 +149,12 @@ def particle_swarm_test(Tx, Ty):
 
 
 
+
+
+
+
+
+ 
 
 
 
