@@ -53,11 +53,16 @@ def constriction_factor_particle_swarm_optimization(objgbest, p, objpbest):
 
 def get_fitness(Tx, Ty, particle):
     for i in range(len(particle.Sx)):
+        if particle.Sx[i] < min(Tx) or particle.Sx[i] > max(Tx):
+            continue
+        if particle.Sy[i] < min(Ty) or particle.Sy[i] > max(Ty):
+            continue
         Tx.append(particle.Sx[i])
         Ty.append(particle.Sy[i])
-    distancevector = gd.get_distancevector(Tx,Ty)
-    objfitness = pa.get_tree(distancevector)
-    return objfitness
+
+    distancevector = gd.get_distancevector(Tx, Ty)
+    objectivefitness = pa.get_tree(distancevector)
+    return objectivefitness
 
 def constriction_factor_particle_swarm_test(Tx, Ty):
     particles = []
