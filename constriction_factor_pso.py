@@ -72,8 +72,8 @@ def constriction_factor_particle_swarm_test(Tx, Ty):
     # global objfitness
     n = random.randint(0, 10)
     for i in range(n):
-        Sx = gd.get_xdata(0, 500, 98)
-        Sy = gd.get_ydata(0, 500, 98)
+        Sx = gd.get_xdata(0, 500, 8)
+        Sy = gd.get_ydata(0, 500, 8)
         Xs = reduce((lambda x, y: x + y), Sx) // len(Sx)
         Ys = reduce((lambda x, y: x + y), Sy) // len(Sy)
         particle = Particle(Sx, Sy, 0, Xs, Ys)
@@ -101,10 +101,10 @@ def constriction_factor_particle_swarm_test(Tx, Ty):
 def call_methods(Tx, Ty, lenTx, lenTy):
     # Tx = gd.get_xdata(0, 500, 100)
     # Ty = gd.get_ydata(0, 500, 100)
-    '''
+
     lenTx = len(Tx)
     lenTy = len(Ty)
-    '''
+
     # Calculating mST for CPSO
     Rx = Tx[0:len(Tx) - lenTx]
     Ry = Ty[0:len(Tx) - lenTy]
@@ -139,7 +139,7 @@ def call_methods(Tx, Ty, lenTx, lenTy):
     mst = pa.mst_prim(distancevector)
     mst_size = pa.get_tree(distancevector)
     print("Size of Steiner Tree for Constricted-PSO", mst_size)
-    pa.draw_gridgraph(Tx, Ty, mst)
+    pa.draw_gridgraph(Tx, Ty, mst,lenTx,lenTy)
 
 
 
