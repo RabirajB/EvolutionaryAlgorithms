@@ -2,6 +2,7 @@ import math
 import gridgraphdemo as gd
 import matplotlib.pyplot as plot
 
+
 class Min_Item:
     def __init__(self, minitem,  item_id):
         self.minitem = minitem
@@ -99,7 +100,7 @@ def get_tree(distancevector):
 
     return mst_size
 
-def draw_gridgraph(Tx,Ty,mst):
+def draw_gridgraph(Tx,Ty,mst,lenTx,lenTy):
     i = 1
     while i in range(len(mst)):
         u = mst[i].parent
@@ -107,7 +108,7 @@ def draw_gridgraph(Tx,Ty,mst):
         Sy = Ty[u.vertex_id]
         destx = Tx[mst[i].vertex_id]
         desty = Ty[mst[i].vertex_id]
-        gd.figure_plot(Sx, Sy, destx, desty, u.vertex_id, mst[i].vertex_id)
+        gd.figure_plot(Sx, Sy, destx, desty, u.vertex_id, mst[i].vertex_id,lenTx,lenTy)
         i = i+1
     plot.show()
 

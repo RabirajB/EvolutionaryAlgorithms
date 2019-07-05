@@ -67,13 +67,19 @@ def  draw_gridgraph(start, end, n):
             figure_plot(Sx[i], Sy[i], destx, desty)
     plot.show()
 
-def figure_plot(x, y, destx, desty, a, b):
+def figure_plot(x, y, destx, desty, a, b, lenTx,lenTy):
     plot.scatter(x, y)
     plot.scatter(destx, desty)
-    plot.annotate(a, (x, y))
-    plot.annotate(b, (destx, desty))
-    plot.plot([x, destx], [y, y])
-    plot.plot([destx, destx], [y, desty])
+    if a < lenTx :
+        plot.plot (x, y,"ro")
+    if b < lenTx:
+        plot.plot(destx, desty,"ro")
+    if a>=lenTx:
+        plot.plot(x,y,"bs")
+    if b >= lenTx:
+        plot.plot(destx,desty,"bs")
+    plot.plot([x, destx], [y, y],color='black')
+    plot.plot([destx, destx], [y, desty],color = 'black')
 
 
 

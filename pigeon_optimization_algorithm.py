@@ -8,12 +8,13 @@ import math
 
 class Pigeon:
     # class used to initialize a pigeon
-    def __init__(self, Sx, Sy, V, Xp, Yp):
+    def __init__(self, Sx, Sy, V, Xp, Yp,fitness):
         self.Sx = Sx
         self.Sy = Sy
         self.V = V
         self.Xp = Xp
         self.Yp = Yp
+        self.fitness = fitness
 
 
 def pigeon_optimization(Objbest, p, iteration):
@@ -60,22 +61,22 @@ def get_fitness(Tx, Ty, pigeon):
 def pigeon_test(Tx, Ty):
     pigeons = []
     global objfitness
-    n = random.randint(0, 10)
+    #n = random.randint(0, 10)
     lenTx = len(Tx)
     lenTy = len(Ty)
-    for i in range(n):
-        Sx = gd.get_xdata(0, 500, 98)
-        Sy = gd.get_ydata(0, 500, 98)
+    for i in range(150):
+        Sx = gd.get_xdata(0, 500, lenTx - 2)
+        Sy = gd.get_ydata(0, 500, lenTy - 2)
         Xs = reduce((lambda x, y: x + y), Sx) // len(Sx)
         Ys = reduce((lambda x, y: x + y), Sy) // len(Sy)
-        pigeon = Pigeon(Sx, Sy, 0, Xs, Ys)
+        pigeon = Pigeon(Sx, Sy, 0, Xs, Ys,0)
         pigeons.append(pigeon)
 
-    for i in range(20):
-        objfitness = []
+    for i in range(75):
+
         for j in range(len(pigeons)):
             mst = get_fitness(Tx, Ty, pigeons[j])
-            objfitness.append(mst)
+            pigeons[j].fitness = mst
             Rx = Tx[0:len(Tx) - lenTx]
             Ry = Tx[0:len(Tx) - lenTy]
             Tx = Tx[0:len(Tx) - len(Rx)]
@@ -84,12 +85,13 @@ def pigeon_test(Tx, Ty):
             # print(Tx)
             # Ty = Ty[0:len(Ty) - len(pigeons[j].Sy)]
             # print(Ty)
-        best_obj_fitness = min(objfitness)
+
+        best_obj_fitness = min(pigeons, key = lambda pigeon: pigeon.fitness).fitness
 
         for j in range(len(pigeons)):
             pigeon_optimization(best_obj_fitness, pigeons[j], i)
 
-    pigeon_best = pigeons[objfitness.index(min(objfitness))]
+    pigeon_best = min(pigeons, key = lambda pigeon: pigeon.fitness)
     print(pigeon_best.Sx)
     print(pigeon_best.Sy)
     return pigeon_best
