@@ -15,7 +15,7 @@ distancevector = gd.get_distancevector(Tx, Ty)
 mst = pa.mst_prim(distancevector)
 mst_size = pa.get_tree(distancevector)
 print("Size of the MST = ", mst_size)
-pa.draw_gridgraph(Tx, Ty, mst)
+pa.draw_gridgraph(Tx, Ty, mst,lenTx,lenTy)
 
 poa.call_methods(Tx,Ty,lenTx,lenTy)
 

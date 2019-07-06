@@ -64,7 +64,7 @@ def  draw_gridgraph(start, end, n):
         else:
             destx = Sx[i+1]
             desty = Sy[i+1]
-            figure_plot(Sx[i], Sy[i], destx, desty)
+            #figure_plot(Sx[i], Sy[i], destx, desty)
     plot.show()
 
 def figure_plot(x, y, destx, desty, a, b, lenTx,lenTy):

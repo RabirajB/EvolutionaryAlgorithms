@@ -18,6 +18,11 @@ class Seed:
         self.Sy = Sy
         self.Xp = Xp
         self.Yp = Yp
+def get_sum(weedlist):
+    sum = 0
+    for w in weedlist:
+        sum = sum+ w.fitness
+    return sum
 
 def get_max_fitness(weedlist):
     fmax = 0
@@ -47,12 +52,12 @@ def get_fitness(Tx,Ty,weed):
     return objectivefitness
 
 def competitive_exclusion(weedlist):
-    worst_fitness = get_min_fitness(weedlist)
+    meanfitness = get_sum(weedlist) // len(weedlist)
     for weed in weedlist:
-        if weed.fitness <= worst_fitness:
+        if weed.fitness < meanfitness:
             weedlist.remove(weed)
 
-def iwo_algorithm(Tx,Ty,weedlist,itermax,pmax,Smax,Smin,sigmafinal,sigmainit,n):
+def iwo_algorithm(Tx,Ty,weedlist,itermax,pmax,Smax,Smin,sigmafinal,sigmainit,n):# n = modulation index
    global fmax,fmin
    lenTx = len(Tx)
    lenTy = len(Ty)
@@ -63,22 +68,25 @@ def iwo_algorithm(Tx,Ty,weedlist,itermax,pmax,Smax,Smin,sigmafinal,sigmainit,n):
             Ry = Ty[0:len(Ty) - lenTy]
             Tx = Tx[0:len(Tx) - len(Rx)]
             Ty = Ty[0:len(Ty) - len(Ry)]
+        # Convergence
         component = ((itermax - i) / itermax) ** n
         sigmaiter = sigmafinal + (sigmainit - sigmafinal) * component
         fmax = get_max_fitness(weedlist)
         fmin = get_min_fitness(weedlist)
         for weed in weedlist:
-            Splant= Smin + math.ceil(weed.fitness * (Smax - Smin)/(fmax - fmin))
+            Splant = Smin + math.ceil(weed.fitness * (Smax - Smin)/(fmax - fmin))
             seedlist = []
+            # Initiation
             for k in range(Splant):
-                Sx = np.random.normal(weed.Xp, sigmaiter, 98)
+                Sx = np.random.normal(weed.Xp, sigmaiter, 8) # Skew Position
                 print(Sx)
-                Sy = np.random.normal(weed.Yp, sigmaiter, 98)
+                Sy = np.random.normal(weed.Yp, sigmaiter, 8)
                 print(Sy)
                 Xp = reduce((lambda x, y: x+y), Sx)//len(Sx)
                 Yp = reduce((lambda x, y: x+y), Sy)//len(Sy)
                 seed = Seed(Sx, Sy, Xp, Yp)
                 seedlist.append(seed)
+                #Germination
             for sd in seedlist:
                 weed = Weed(sd.Sx, sd.Sy, sd.Xp, sd.Yp, 0)
                 fitness = get_fitness(Tx, Ty, weed)
@@ -88,7 +96,7 @@ def iwo_algorithm(Tx,Ty,weedlist,itermax,pmax,Smax,Smin,sigmafinal,sigmainit,n):
                 Ty = Ty[0:len(Ty) - len(Ry)]
                 weed.fitness = fitness
                 weedlist.append(weed)
-
+        # Competetive Exclusion
         if len(weedlist)>pmax:
             competitive_exclusion(weedlist)
    return weedlist
@@ -98,14 +106,14 @@ def iwo_test(Tx,Ty):
     lenTy = len(Ty)
     weedlist=[]
     for i in range(10):
-        Wx = gd.get_xdata(0, 500, 98)
-        Wy = gd.get_ydata(0, 500, 98)
+        Wx = gd.get_xdata(0, 500, 8)
+        Wy = gd.get_ydata(0, 500, 8)
         Xp = reduce((lambda x,y: x+y),Wx)//len(Wx)
         Yp = reduce((lambda x,y: x+y),Wy)//len(Wy)
         weed = Weed(Wx,Wy,Xp,Yp,0)
         weedlist.append(weed)
     # iwo_algorithm(Tx,Ty,weedlist,itermax,pmax,Smax,Smin,sigmafinal,sigmainit,n)
-    wlist = iwo_algorithm(Tx,Ty,weedlist,75,150,10,1,0.01,1,3)
+    wlist = iwo_algorithm(Tx,Ty,weedlist,5,150,10,1,0.01,1,3)
     fmax = get_max_fitness(wlist)
     for weed in wlist:
         if fmax == weed.fitness:
@@ -142,8 +150,8 @@ def iwo_test(Tx,Ty):
     print("Restored Y Coordinates=", Ty)
     print("End of IWO")
 
-Tx = gd.get_xdata(0,500,100)
-Ty = gd.get_ydata(0,500,100)
+Tx = gd.get_xdata(0,500,10)
+Ty = gd.get_ydata(0,500,10)
 print(Tx)
 print(Ty)
 lenTx = len(Tx)

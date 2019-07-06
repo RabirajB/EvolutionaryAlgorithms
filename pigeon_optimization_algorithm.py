@@ -20,9 +20,7 @@ class Pigeon:
 def pigeon_optimization(Objbest, p, iteration):
     fitnessbest = math.ceil(1 / Objbest)
     Vx = p.V * math.e ** (random.randint(0, 1) * iteration) + random.randint(0, 1) * (fitnessbest - p.Xp)
-    # print("x velocity=",Vx)
     Vy = p.V * math.e ** (random.randint(0, 1) * iteration) + random.randint(0, 1) * (fitnessbest - p.Yp)
-    # print("Y velocity",Vy)
     Vnew = math.ceil((Vx + Vy)) // 2
     p.V = Vnew
 
@@ -72,7 +70,7 @@ def pigeon_test(Tx, Ty):
         pigeon = Pigeon(Sx, Sy, 0, Xs, Ys,0)
         pigeons.append(pigeon)
 
-    for i in range(75):
+    for i in range(10):
 
         for j in range(len(pigeons)):
             mst = get_fitness(Tx, Ty, pigeons[j])
@@ -134,7 +132,7 @@ def call_methods(Tx, Ty, lenTx, lenTy):
     mst = pa.mst_prim(distancevector)
     mst_size = pa.get_tree(distancevector)
     print("Size of Steiner Tree for PIO", mst_size)
-    pa.draw_gridgraph(Tx, Ty, mst)
+    pa.draw_gridgraph(Tx, Ty, mst, lenTx, lenTy)
     Tx = Tx[0:len(Tx) - count]
     Ty = Ty[0:len(Ty) - count]
     print("Restored X Coordinates=", Tx)
