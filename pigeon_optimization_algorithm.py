@@ -17,8 +17,8 @@ class Pigeon:
         self.fitness = fitness
 
 
-def pigeon_optimization(Objbest, p, iteration):
-    fitnessbest = math.ceil(1 / Objbest)
+def pigeon_optimization_map_and_compass(fitnessbest, p, iteration):
+
     Vx = p.V * math.e ** (random.randint(0, 1) * iteration) + random.randint(0, 1) * (fitnessbest - p.Xp)
     Vy = p.V * math.e ** (random.randint(0, 1) * iteration) + random.randint(0, 1) * (fitnessbest - p.Yp)
     Vnew = math.ceil((Vx + Vy)) // 2
@@ -55,6 +55,30 @@ def get_fitness(Tx, Ty, pigeon):
     objectivefitness = pa.get_tree(distancevector)
     return objectivefitness
 
+def calculate_sum_positionsX(pigeons):
+    sumX,sumx = 0,0
+    for i in range(len(pigeons)):
+        sumx += pigeons[i].fitness
+        sumX += (pigeons[i].Xp)*pigeons[i].fitness
+    return sumX,sumx
+
+def calculate_sum_positionsY(pigeons):
+    sumY,sumy = 0,0
+    for i in range(len(pigeons)):
+        sumy += pigeons[i].fitness
+        sumY += (pigeons[i].Yp)*pigeons[i].fitness
+    return sumY,sumy
+
+def calculate_x_position(Sx,Xxc):
+    for i in range(len(Sx)):
+        temp = Sx[i] + random.randint(0,1) * (Xxc - Sx[i])
+        Sx[i] = temp
+
+def calculate_y_position(Sy,Yyc):
+    for i in range(len(Sy)):
+        temp = Sy[i] + random.randint(0,1) * (Yyc - Sy[i])
+        Sy[i] = temp
+
 
 def pigeon_test(Tx, Ty):
     pigeons = []
@@ -74,7 +98,7 @@ def pigeon_test(Tx, Ty):
 
         for j in range(len(pigeons)):
             mst = get_fitness(Tx, Ty, pigeons[j])
-            pigeons[j].fitness = mst
+            pigeons[j].fitness = 1/mst
             Rx = Tx[0:len(Tx) - lenTx]
             Ry = Tx[0:len(Tx) - lenTy]
             Tx = Tx[0:len(Tx) - len(Rx)]
@@ -84,16 +108,49 @@ def pigeon_test(Tx, Ty):
             # Ty = Ty[0:len(Ty) - len(pigeons[j].Sy)]
             # print(Ty)
 
-        best_obj_fitness = min(pigeons, key = lambda pigeon: pigeon.fitness).fitness
+        best_fitness = max(pigeons, key = lambda pigeon: pigeon.fitness).fitness
 
         for j in range(len(pigeons)):
-            pigeon_optimization(best_obj_fitness, pigeons[j], i)
-
-    pigeon_best = min(pigeons, key = lambda pigeon: pigeon.fitness)
+            pigeon_optimization_map_and_compass(best_fitness, pigeons[j], i)
+    pigeon_optimization_landmark(Tx,Ty,lenTx,lenTy,pigeons)
+    pigeon_best = max(pigeons, key = lambda pigeon: pigeon.fitness)
     print(pigeon_best.Sx)
     print(pigeon_best.Sy)
     return pigeon_best
 
+def pigeon_optimization_landmark(Tx, Ty, lenTx, lenTy, pigeons):
+
+    for i in range(len(pigeons),10, - math.ceil(len(pigeons)//2)):
+        pigeons = pigeons[0:i]
+        pigeons.sort(key=lambda pigeon: pigeon.fitness, reverse=True)
+        sumX,sumx = calculate_sum_positionsX(pigeons)
+        sumY,sumy = calculate_sum_positionsY(pigeons)
+        Xxc = sumX // (i*sumx)
+        Yyc = sumY // (i*sumy)
+        for j in range(len(pigeons)):
+
+            Sxnew = list(map(lambda x: x - random.randint(0,1)*(Xxc - x), pigeons[j].Sx))
+            Synew = list(map(lambda y: y - random.randint(0,1)*(Yyc - y), pigeons[j].Sy))
+            #calculate_x_position(Sxnew,Xxc)
+            #calculate_y_position(Synew,Yyc)
+            Xpnew = reduce((lambda x, y: x + y), Sxnew) // len(pigeons[j].Sx)
+            Ypnew = reduce((lambda x, y: x + y), Synew) // len(pigeons[j].Sy)
+            if Xpnew < 0 or Xpnew > 500 or Ypnew < 0 or Ypnew > 500:
+                pigeons[j].Sx = pigeons[j].Sx
+                pigeons[j].Sy = pigeons[j].Sy
+                pigeons[j].V = pigeons[j].V
+                pigeons[j].Xp = pigeons[j].Xp
+                pigeons[j].Yp = pigeons[j].Yp
+            else:
+                pigeons[j].Sx = Sxnew
+                pigeons[j].Sy = Synew
+                pigeons[j].Xp = Xpnew
+                pigeons[j].Yp = Ypnew
+                pigeons[j].fitness = 1/get_fitness(Tx,Ty,pigeons[j])
+                Rx = Tx[0:len(Tx) - lenTx]
+                Ry = Ty[0:len(Ty) - lenTy]
+                Tx = Tx[0:len(Tx) - len(Rx)]
+                Ty = Ty[0:len(Ty) - len(Ry)]
 
 def call_methods(Tx, Ty, lenTx, lenTy):
     # Tx = gd.get_xdata(0, 500, 10)
@@ -123,8 +180,8 @@ def call_methods(Tx, Ty, lenTx, lenTy):
         if bestpigeon.Sy[i] < min(Ty) or bestpigeon.Sy[i] > max(Ty):
             continue
 
-        Tx.append(bestpigeon.Sx[i])
-        Ty.append(bestpigeon.Sy[i])
+        Tx.append(math.floor(bestpigeon.Sx[i]))
+        Ty.append(math.floor(bestpigeon.Sy[i]))
         count = count + 1
     print("Updated X Coordinates", Tx)
     print("Updated Y Coordinates", Ty)
