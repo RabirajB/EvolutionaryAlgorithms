@@ -102,8 +102,8 @@ def call_methods(Tx, Ty, lenTx, lenTy):
     # Tx = gd.get_xdata(0, 500, 100)
     # Ty = gd.get_ydata(0, 500, 100)
 
-    lenTx = len(Tx)
-    lenTy = len(Ty)
+    #lenTx = len(Tx)
+    #lenTy = len(Ty)
 
     # Calculating mST for CPSO
     Rx = Tx[0:len(Tx) - lenTx]
