@@ -41,6 +41,12 @@ def pigeon_optimization_map_and_compass(fitnessbest, p, iteration):
         p.Xp = Xpnew
         p.Yp = Ypnew
 
+def get_original_list(Tx,Ty,lenTx,lenTy):
+    Rx = Tx[0:len(Tx) - lenTx]
+    Ry = Ty[0:len(Tx) - lenTy]
+    Tx = Tx[0:len(Tx) - len(Rx)]
+    Ty = Ty[0:len(Ty) - len(Ry)]
+
 
 def get_fitness(Tx, Ty, pigeon):
     for i in range(len(pigeon.Sx)):
@@ -99,10 +105,13 @@ def pigeon_test(Tx, Ty):
         for j in range(len(pigeons)):
             mst = get_fitness(Tx, Ty, pigeons[j])
             pigeons[j].fitness = 1/mst
+
             Rx = Tx[0:len(Tx) - lenTx]
-            Ry = Tx[0:len(Tx) - lenTy]
+            Ry = Ty[0:len(Tx) - lenTy]
             Tx = Tx[0:len(Tx) - len(Rx)]
-            Ty = Tx[0:len(Ty) - len(Ry)]
+            Ty = Ty[0:len(Ty) - len(Ry)]
+
+            #get_original_list(Tx,Ty,lenTx,lenTy)
             # Tx = Tx[0:len(Tx) - len(pigeons[j].Sx)]
             # print(Tx)
             # Ty = Ty[0:len(Ty) - len(pigeons[j].Sy)]
@@ -141,16 +150,20 @@ def pigeon_optimization_landmark(Tx, Ty, lenTx, lenTy, pigeons):
                 pigeons[j].V = pigeons[j].V
                 pigeons[j].Xp = pigeons[j].Xp
                 pigeons[j].Yp = pigeons[j].Yp
+                pigeons[j].fitness = pigeons[j].fitness
             else:
                 pigeons[j].Sx = Sxnew
                 pigeons[j].Sy = Synew
                 pigeons[j].Xp = Xpnew
                 pigeons[j].Yp = Ypnew
                 pigeons[j].fitness = 1/get_fitness(Tx,Ty,pigeons[j])
+
                 Rx = Tx[0:len(Tx) - lenTx]
                 Ry = Ty[0:len(Ty) - lenTy]
                 Tx = Tx[0:len(Tx) - len(Rx)]
                 Ty = Ty[0:len(Ty) - len(Ry)]
+
+                #get_original_list(Tx,Ty,lenTx,lenTy)
 
 def call_methods(Tx, Ty, lenTx, lenTy):
     # Tx = gd.get_xdata(0, 500, 10)
