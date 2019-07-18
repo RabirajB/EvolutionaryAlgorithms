@@ -41,12 +41,12 @@ def pigeon_optimization_map_and_compass(fitnessbest, p, iteration):
         p.Xp = Xpnew
         p.Yp = Ypnew
 
-def get_original_list(Tx,Ty,lenTx,lenTy):
+'''def get_original_list(Tx,Ty,lenTx,lenTy):
     Rx = Tx[0:len(Tx) - lenTx]
     Ry = Ty[0:len(Tx) - lenTy]
     Tx = Tx[0:len(Tx) - len(Rx)]
     Ty = Ty[0:len(Ty) - len(Ry)]
-
+'''
 
 def get_fitness(Tx, Ty, pigeon):
     for i in range(len(pigeon.Sx)):
@@ -74,7 +74,7 @@ def calculate_sum_positionsY(pigeons):
         sumy += pigeons[i].fitness
         sumY += (pigeons[i].Yp)*pigeons[i].fitness
     return sumY,sumy
-
+'''
 def calculate_x_position(Sx,Xxc):
     for i in range(len(Sx)):
         temp = Sx[i] + random.randint(0,1) * (Xxc - Sx[i])
@@ -84,7 +84,7 @@ def calculate_y_position(Sy,Yyc):
     for i in range(len(Sy)):
         temp = Sy[i] + random.randint(0,1) * (Yyc - Sy[i])
         Sy[i] = temp
-
+'''
 
 def pigeon_test(Tx, Ty):
     pigeons = []
@@ -103,6 +103,8 @@ def pigeon_test(Tx, Ty):
     for i in range(10):
 
         for j in range(len(pigeons)):
+            #Txnew = Tx[:]
+            #Tynew = Ty[:]
             mst = get_fitness(Tx, Ty, pigeons[j])
             pigeons[j].fitness = 1/mst
 
@@ -175,11 +177,13 @@ def call_methods(Tx, Ty, lenTx, lenTy):
     # Calculating mST for PIO
     print("X coordinates =", Tx)
     print("Y coordinates =", Ty)
+
     bestpigeon = pigeon_test(Tx, Ty)
     Rx = Tx[0:len(Tx) - lenTx]
     Ry = Ty[0:len(Ty) - lenTy]
     Tx = Tx[0:len(Tx) - len(Rx)]
     Ty = Ty[0:len(Ty) - len(Ry)]
+
     # print("Updated X coordinates", Tx)
     # print("Updated Y coordinates", Ty)
     print("X coordinates of best pigeon", bestpigeon.Sx)

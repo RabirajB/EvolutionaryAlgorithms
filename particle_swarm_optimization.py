@@ -28,7 +28,14 @@ def particle_swarm_optimization(objgbest, p, objpbest):
     Synew = list(map(lambda y: y + Vy, p.Sy))
     Xpnew = reduce((lambda x, y: x + y), Sxnew) // len(p.Sx)
     Ypnew = reduce((lambda x, y: x + y), Synew) // len(p.Sy)
-    if Xpnew < 0 or Xpnew > 500 or Ypnew < 0 or Ypnew > 500:
+    ratio1 = 0.6
+    negatives = 0
+    for i in range(len(Sxnew)):
+        if Sxnew[i] < 0 or Synew[i] < 0:
+            negatives = negatives + 1
+    ratio2 = negatives // len(Sxnew)
+    #if Xpnew < 0 or Xpnew > 500 or Ypnew < 0 or Ypnew > 500:
+    if ratio2 > ratio1:
         p.Sx = p.Sx
         p.Sy = p.Sy
         p.V = p.V
@@ -64,8 +71,8 @@ def particle_swarm_test(Tx, Ty):
     #global objfitness
     n = random.randint(0, 10)
     for i in range(n):
-        Sx = gd.get_xdata(0, 500, 8)
-        Sy = gd.get_ydata(0, 500, 8)
+        Sx = gd.get_xdata(0, 500, lenTx - 2)
+        Sy = gd.get_ydata(0, 500, lenTy - 2)
         Xs = reduce((lambda x, y: x+y), Sx) // len(Sx)
         Ys = reduce((lambda x, y: x+y), Sy) // len(Sy)
         particle = Particle(Sx, Sy, 0, Xs, Ys)
@@ -79,9 +86,9 @@ def particle_swarm_test(Tx, Ty):
             if mst < pbestvector[j]:
                 pbestvector[j] = mst
             Rx = Tx[0:len(Tx) - lenTx]
-            Ry = Tx[0:len(Tx) - lenTy]
+            Ry = Ty[0:len(Tx) - lenTy]
             Tx = Tx[0:len(Tx) - len(Rx)]
-            Ty = Tx[0:len(Ty) - len(Ry)]
+            Ty = Ty[0:len(Ty) - len(Ry)]
         best_obj_fitness = min(pbestvector)
         for j in range(len(particles)):
             particle_swarm_optimization(best_obj_fitness, particles[j], pbestvector[j])

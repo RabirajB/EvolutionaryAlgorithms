@@ -36,7 +36,14 @@ def constriction_factor_particle_swarm_optimization(objgbest, p, objpbest):
     Synew = list(map(lambda y: y + Vy, p.Sy))
     Xpnew = reduce((lambda x, y: x + y), Sxnew) // len(p.Sx)
     Ypnew = reduce((lambda x, y: x + y), Synew) // len(p.Sy)
-    if Xpnew < 0 or Xpnew > 500 or Ypnew < 0 or Ypnew > 500:
+    negatives = 0
+    ratio1 = 0.3
+    for i in range(len(Sxnew)):
+        if Sxnew[i] < 0  or Synew[i] < 0:
+            negatives = negatives + 1
+    ratio2 = negatives // len(Sxnew)
+    #if Xpnew < 0 or Xpnew > 500 or Ypnew < 0 or Ypnew > 500:
+    if ratio2 > ratio1:
         p.Sx = p.Sx
         p.Sy = p.Sy
         p.V = p.V
@@ -71,9 +78,9 @@ def constriction_factor_particle_swarm_test(Tx, Ty):
     lenTy = len(Ty)
     # global objfitness
     n = random.randint(0, 10)
-    for i in range(n):
-        Sx = gd.get_xdata(0, 500, 8)
-        Sy = gd.get_ydata(0, 500, 8)
+    for i in range(20):
+        Sx = gd.get_xdata(0, 500, lenTx - 2)
+        Sy = gd.get_ydata(0, 500, lenTx - 2)
         Xs = reduce((lambda x, y: x + y), Sx) // len(Sx)
         Ys = reduce((lambda x, y: x + y), Sy) // len(Sy)
         particle = Particle(Sx, Sy, 0, Xs, Ys)
@@ -87,9 +94,9 @@ def constriction_factor_particle_swarm_test(Tx, Ty):
             if mst < pbestvector[j]:
                 pbestvector[j] = mst
             Rx = Tx[0:len(Tx) - lenTx]
-            Ry = Tx[0:len(Tx) - lenTy]
+            Ry = Ty[0:len(Tx) - lenTy]
             Tx = Tx[0:len(Tx) - len(Rx)]
-            Ty = Tx[0:len(Ty) - len(Ry)]
+            Ty = Ty[0:len(Ty) - len(Ry)]
         best_obj_fitness = min(pbestvector)
         for j in range(len(particles)):
             constriction_factor_particle_swarm_optimization(best_obj_fitness, particles[j], pbestvector[j])
@@ -130,8 +137,8 @@ def call_methods(Tx, Ty, lenTx, lenTy):
         if bestparticle.Sy[i] < min(Ty) or bestparticle.Sy[i] > max(Ty):
             continue
 
-        Tx.append(bestparticle.Sx[i])
-        Ty.append(bestparticle.Sy[i])
+        Tx.append(math.floor(bestparticle.Sx[i]))
+        Ty.append(math.floor(bestparticle.Sy[i]))
         count = count + 1
     print("Updated X Coordinates", Tx)
     print("Updated Y Coordinates", Ty)
