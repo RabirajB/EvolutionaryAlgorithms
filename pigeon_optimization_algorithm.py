@@ -30,7 +30,7 @@ def pigeon_optimization_map_and_compass(fitnessbest, p, iteration):
     #Synew = list(map(lambda y: y + Vy, p.Sy))
     #Xpnew = reduce((lambda x, y: x + y), Sxnew) // len(p.Sx)
     #Ypnew = reduce((lambda x, y: x + y), Synew) // len(p.Sy)
-
+    
     Sxnew = p.Sx + Vx # changes done
     Synew = p.Sy + Vy # changes done
     length = p.Sx.size # changes done
@@ -38,11 +38,11 @@ def pigeon_optimization_map_and_compass(fitnessbest, p, iteration):
     Ypnew = np.sum(Synew) // length # changes done
 
     if Xpnew < 0 or Xpnew > 500 or Ypnew < 0 or Ypnew > 500:
-        #p.Sx = p.Sx
-        #p.Sy = p.Sy
+        p.Sx = p.Sx
+        p.Sy = p.Sy
         p.V = p.V
-        #p.Xp = p.Xp
-        #p.Yp = p.Yp
+        p.Xp = p.Xp
+        p.Yp = p.Yp
     else:
         p.Sx = Sxnew
         p.Sy = Synew
@@ -57,8 +57,10 @@ def get_fitness(Tx, Ty, pigeon):
             continue
         if pigeon.Sy[i] < min(Ty) or pigeon.Sy[i] > max(Ty):
             continue
-        np.append(Tx, pigeon.Sx[i])
-        np.append(Ty, pigeon.Sy[i])
+        Tx = np.append(Tx, pigeon.Sx[i])
+        #print(Tx)
+        Ty = np.append(Ty, pigeon.Sy[i])
+        #print(Ty)
 
     distancevector = gd.get_distancevector(Tx, Ty)
     objectivefitness = pa.get_tree(distancevector)
@@ -110,7 +112,7 @@ def pigeon_test(Tx, Ty):
             mst = get_fitness(Tx, Ty, pigeons[j])
             pigeons[j].fitness = 1/mst
             Rx = Tx[0:len(Tx) - lenTx]
-            Ry = Tx[0:len(Tx) - lenTy]
+            Ry = Ty[0:len(Tx) - lenTy]
             Tx = Tx[0:len(Tx) - len(Rx)]
             Ty = Tx[0:len(Ty) - len(Ry)]
             # Tx = Tx[0:len(Tx) - len(pigeons[j].Sx)]
@@ -152,12 +154,12 @@ def pigeon_optimization_landmark(Tx, Ty, lenTx, lenTy, pigeons):
             Ypnew = np.sum(pigeons[j].Sy) // len_S
 
             if Xpnew < 0 or Xpnew > 500 or Ypnew < 0 or Ypnew > 500:
-                '''pigeons[j].Sx = pigeons[j].Sx
+                pigeons[j].Sx = pigeons[j].Sx
                 pigeons[j].Sy = pigeons[j].Sy
                 pigeons[j].V = pigeons[j].V
                 pigeons[j].Xp = pigeons[j].Xp
-                pigeons[j].Yp = pigeons[j].Yp'''
-                pass
+                pigeons[j].Yp = pigeons[j].Yp
+                #pass
             else:
                 pigeons[j].Sx = Sxnew
                 pigeons[j].Sy = Synew
@@ -199,8 +201,8 @@ def call_methods(Tx, Ty, lenTx, lenTy):
 
         #Tx.append(math.floor(bestpigeon.Sx[i]))
         #Ty.append(math.floor(bestpigeon.Sy[i]))
-        np.append(Tx, np.floor(bestpigeon.Sx[i]))
-        np.append(Ty, np.floor(bestpigeon.Sy[i]))
+        Tx = np.append(Tx, np.floor(bestpigeon.Sx[i]))
+        Ty = np.append(Ty, np.floor(bestpigeon.Sy[i]))
         count = count + 1
     print("Updated X Coordinates", Tx)
     print("Updated Y Coordinates", Ty)

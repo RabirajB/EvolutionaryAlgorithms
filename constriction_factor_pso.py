@@ -1,7 +1,7 @@
 #program to demonstrate constriction factor based particle swarm optimization algorithm
 import random
 from ctypes import c_byte
-
+import numpy as np
 import gridgraphdemo as gd
 import prim_algorithm as pa
 from functools import reduce
@@ -32,16 +32,22 @@ def constriction_factor_particle_swarm_optimization(objgbest, p, objpbest):
     Vy = k*(p.V + 2 * random.randint(0,1) * (pbest - p.Yp) + 2 * random.randint (0,1) * (gbest - p.Yp))
     #print(Vy)
     Vnew = math.ceil((Vx + Vy))//2
-    Sxnew = list(map(lambda x: x + Vx, p.Sx))
-    Synew = list(map(lambda y: y + Vy, p.Sy))
-    Xpnew = reduce((lambda x, y: x + y), Sxnew) // len(p.Sx)
-    Ypnew = reduce((lambda x, y: x + y), Synew) // len(p.Sy)
+    #Sxnew = list(map(lambda x: x + Vx, p.Sx))
+    #Synew = list(map(lambda y: y + Vy, p.Sy))
+    Sxnew = p.Sx + Vx
+    Synew = p.Sy + Vy
+    len_S = p.Sx.size
+    #Xpnew = reduce((lambda x, y: x + y), Sxnew) // len(p.Sx)
+    #Ypnew = reduce((lambda x, y: x + y), Synew) // len(p.Sy)
+    Xpnew = np.sum(Sxnew) // len_S
+    Ypnew = np.sum(Synew) // len_S
     if Xpnew < 0 or Xpnew > 500 or Ypnew < 0 or Ypnew > 500:
-        p.Sx = p.Sx
+        '''p.Sx = p.Sx
         p.Sy = p.Sy
         p.V = p.V
         p.Xp = p.Xp
-        p.Yp = p.Yp
+        p.Yp = p.Yp'''
+        pass
     else:
         p.Sx = Sxnew
         p.Sy = Synew
@@ -57,8 +63,8 @@ def get_fitness(Tx, Ty, particle):
             continue
         if particle.Sy[i] < min(Ty) or particle.Sy[i] > max(Ty):
             continue
-        Tx.append(particle.Sx[i])
-        Ty.append(particle.Sy[i])
+        Tx = np.append(Tx, particle.Sx[i])
+        Ty = np.append(Ty, particle.Sy[i])
 
     distancevector = gd.get_distancevector(Tx, Ty)
     objectivefitness = pa.get_tree(distancevector)
@@ -67,19 +73,24 @@ def get_fitness(Tx, Ty, particle):
 def constriction_factor_particle_swarm_test(Tx, Ty):
     particles = []
     pbestvector = []
-    lenTx = len(Tx)
-    lenTy = len(Ty)
+    #lenTx = len(Tx)
+    #lenTy = len(Ty)
+    lenTx = Tx.size
+    lenTy = lenTx
     # global objfitness
     n = random.randint(0, 10)
     for _ in range(n):
         Sx = gd.get_xdata(0, 500, 8)
         Sy = gd.get_ydata(0, 500, 8)
-        Xs = reduce((lambda x, y: x + y), Sx) // len(Sx)
-        Ys = reduce((lambda x, y: x + y), Sy) // len(Sy)
+        #Xs = reduce((lambda x, y: x + y), Sx) // len(Sx)
+        #Ys = reduce((lambda x, y: x + y), Sy) // len(Sy)
+        len_S = Sx.size
+        Xs = np.sum(Sx) // len_S
+        Ys = np.sum(Sy) // len_S
         particle = Particle(Sx, Sy, 0, Xs, Ys)
         particles.append(particle)
         pbestvector.append(math.inf)
-    for i in range(20):
+    for _ in range(20):
         # objfitness = []
 
         for j in range(len(particles)):
@@ -102,8 +113,8 @@ def call_methods(Tx, Ty, lenTx, lenTy):
     # Tx = gd.get_xdata(0, 500, 100)
     # Ty = gd.get_ydata(0, 500, 100)
 
-    lenTx = len(Tx)
-    lenTy = len(Ty)
+    lenTx = Tx.size
+    lenTy = Ty.size
 
     # Calculating mST for CPSO
     Rx = Tx[0:len(Tx) - lenTx]
@@ -130,8 +141,8 @@ def call_methods(Tx, Ty, lenTx, lenTy):
         if bestparticle.Sy[i] < min(Ty) or bestparticle.Sy[i] > max(Ty):
             continue
 
-        Tx.append(bestparticle.Sx[i])
-        Ty.append(bestparticle.Sy[i])
+        Tx = np.append(Tx, bestparticle.Sx[i])
+        Ty = np.append(Ty, bestparticle.Sy[i])
         count = count + 1
     print("Updated X Coordinates", Tx)
     print("Updated Y Coordinates", Ty)
@@ -140,24 +151,3 @@ def call_methods(Tx, Ty, lenTx, lenTy):
     mst_size = pa.get_tree(distancevector)
     print("Size of Steiner Tree for Constricted-PSO", mst_size)
     pa.draw_gridgraph(Tx, Ty, mst,lenTx,lenTy)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

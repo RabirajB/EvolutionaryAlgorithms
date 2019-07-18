@@ -4,8 +4,8 @@ import pigeon_optimization_algorithm as poa
 import particle_swarm_optimization as pso
 import constriction_factor_pso as cpso
 
-Tx = gd.get_xdata(0, 500, 50)
-Ty = gd.get_ydata(0, 500, 50)
+Tx = gd.get_xdata(0, 500, 60)
+Ty = gd.get_ydata(0, 500, 60)
 #lenTx = len(Tx)
 #lenTy = len(Ty)
 lenTx = Tx.size
@@ -23,4 +23,4 @@ poa.call_methods(Tx,Ty,lenTx,lenTy)
 
 pso.call_methods(Tx,Ty,lenTx,lenTy)
 
-#cpso.call_methods(Tx,Ty,lenTx,lenTy)
+cpso.call_methods(Tx,Ty,lenTx,lenTy)

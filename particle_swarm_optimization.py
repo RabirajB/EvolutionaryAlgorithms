@@ -58,8 +58,8 @@ def get_fitness(Tx, Ty, particle):
             continue
         #Tx.append(particle.Sx[i])
         #Ty.append(particle.Sy[i])
-        np.append(Tx, particle.Sx[i])
-        np.append(Ty, particle.Sy[i])
+        Tx = np.append(Tx, particle.Sx[i])
+        Ty = np.append(Ty, particle.Sy[i])
 
     distancevector = gd.get_distancevector(Tx, Ty)
     objectivefitness = pa.get_tree(distancevector)
@@ -154,8 +154,8 @@ def call_methods(Tx,Ty,lenTx,lenTy):
 
         #Tx.append(bestparticle.Sx[i])
         #Ty.append(bestparticle.Sy[i])
-        np.append(Tx, bestparticle.Sx[i])
-        np.append(Ty, bestparticle.Sy[i])
+        Tx = np.append(Tx, bestparticle.Sx[i])
+        Ty = np.append(Ty, bestparticle.Sy[i])
         count = count + 1
     print("Updated X Coordinates", Tx)
     print("Updated Y Coordinates", Ty)
