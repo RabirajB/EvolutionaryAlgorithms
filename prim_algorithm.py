@@ -93,7 +93,7 @@ def get_tree(distancevector):
     i = 1
     mst_size = 0
     while i < len(mst):
-        #u = mst[i].parent
+        u = mst[i].parent
         #print(u.vertex_id, "->", mst[i].vertex_id)
         mst_size += mst[i].key
         i = i+1
