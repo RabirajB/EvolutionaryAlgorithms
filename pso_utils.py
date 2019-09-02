@@ -4,12 +4,19 @@ import prim_algorithm as pa
 import math
 import random
 
+# Global Variables
+particle_no = 150
+iter_no = 15
+dim = 500
+get_velocity_position = None
+
 class Particle:
-    #class used to initialize a particle
-    def __init__(self, Sx=0, Sy=0, V=0, fitness = None):
+    # Class used to initialize a particle
+    def __init__(self, Sx=0, Sy=0, V=[0, 0], fitness = None):
         self.Sx = Sx
         self.Sy = Sy
-        self.V = V
+        self.Vx = V[0]
+        self.Vy = V[1]
         self.fitness = fitness
 
 def get_fitness(Tx, Ty, particle):
@@ -46,7 +53,7 @@ def get_fitness(Tx, Ty, particle):
 
 def particle_swarm_optimization(Tx, Ty, gbest, p, pbest):
     
-    #Method for particle Swarm Optimization test
+    # Method for particle Swarm Optimization test
 
     Vnew, Sxnew, Synew = get_velocity_position(gbest, pbest, p)
 
@@ -65,15 +72,17 @@ def particle_swarm_optimization(Tx, Ty, gbest, p, pbest):
     else:
         p.Sx = Sxnew
         p.Sy = Synew
-        p.V = Vnew
+        p.Vx = Vnew[0]
+        p.Vy = Vnew[1]
         p.fitness = get_fitness(np.copy(Tx), np.copy(Ty), p)
 
 def particle_swarm_test(Tx, Ty, lenT):
 
     # Method responsible for the controlling of the whole of the PSO Algorithm
     
-    particles = []
-    particle_no = 150
+    particles = [] # List that stores all the particles
+    global particle_no # Global Variables declared at the begening of the program
+    global iter_no # Global Variables declared at the begening of the program
     len_S = lenT - 2  # Total number of Steiner points is total Terminal points - 2
     pbest = Particle(fitness=math.inf) # Initialize the Pbest particle
     gbest = Particle(fitness=math.inf) # Initialize the Gbest particle
@@ -89,7 +98,7 @@ def particle_swarm_test(Tx, Ty, lenT):
         particles.append(particle)
 
     # Running the PSO
-    for _ in range(15):
+    for _ in range(iter_no):
 
         # Finding the Pbest
         for j in range(particle_no):
@@ -97,14 +106,16 @@ def particle_swarm_test(Tx, Ty, lenT):
             if mst < pbest.fitness:
                 pbest.Sx = np.copy(particles[j].Sx)
                 pbest.Sy = np.copy(particles[j].Sy)
-                pbest.V = np.copy(particles[j].V)
+                pbest.Vx = np.copy(particles[j].Vx)
+                pbest.Vy = np.copy(particles[j].Vy)
                 pbest.fitness = mst
         
         # Finding the Gbest
         if gbest.fitness > pbest.fitness:
             gbest.Sx = np.copy(pbest.Sx)
             gbest.Sy = np.copy(pbest.Sy)
-            gbest.V = np.copy(pbest.V)
+            gbest.Vx = np.copy(pbest.Vx)
+            gbest.Vy = np.copy(pbest.Vy)
             gbest.fitness = pbest.fitness
         
         for j in range(particle_no):
@@ -114,10 +125,14 @@ def particle_swarm_test(Tx, Ty, lenT):
     return gbest
 
 # Calling the respective modules
-def call_methods(Tx,Ty,lenTx,lenTy):
+def call_methods(Tx,Ty,lenT, func):
+
+    # Setting the method into a method variable for dynamic linking
+    global get_velocity_position
+    get_velocity_position = func
 
     # Calling the method that controls the main optimisation algorithm
-    bestparticle = particle_swarm_test(np.copy(Tx), np.copy(Ty), lenTx)
+    bestparticle = particle_swarm_test(np.copy(Tx), np.copy(Ty), lenT)
 
     # Extracting the position of the Steiner Points from the best particle
     for i in range(bestparticle.Sx.size):
@@ -138,6 +153,6 @@ def call_methods(Tx,Ty,lenTx,lenTy):
     return_set = (mst_size, Tx, Ty)
 
     # Ploting the RSMT
-    pa.draw_gridgraph(Tx, Ty, mst,lenTx,lenTx)
+    pa.draw_gridgraph(Tx, Ty, mst,lenT,lenT)
 
     return return_set
