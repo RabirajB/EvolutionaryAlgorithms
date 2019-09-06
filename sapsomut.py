@@ -14,15 +14,17 @@ def get_velocity_position(gbest, pbest, p):
     global particle_no
     global dim
     global current_iter
+    
     fitness = p.fitness / gbest.fitness
     w = 3 - math.exp(-particle_no/200) + (fitness * dim / 8)**2
     w = (1/w) + 0.8
     c = 2 - ((0.5/iter_no) * current_iter)
-    Vx = (w * p.Vx) + (c * random.randint(0,1) * (pbest.Sx - p.Sx)) + (c * random.randint(0, 1) * (gbest.Sx - p.Sx))
-    Vy = (w * p.Vy) + (c * random.randint(0,1) * (pbest.Sy - p.Sy)) + (c * random.randint(0, 1) * (gbest.Sy - p.Sy))
-    Sxnew = (c * random.randint(0,1) * p.Sx) + Vx
-    Synew = (c * random.randint(0,1) * p.Sy) + Vy
+    Vx = np.around((w * p.Vx) + (c * random.random() * (pbest.Sx - p.Sx)) + (c * random.random() * (gbest.Sx - p.Sx)))
+    Vy = np.around((w * p.Vy) + (c * random.random() * (pbest.Sy - p.Sy)) + (c * random.random() * (gbest.Sy - p.Sy)))
+    Sxnew = np.around((c * random.random() * p.Sx) + Vx)
+    Synew = np.around((c * random.random() * p.Sy) + Vy)
     current_iter += 1
+    
     return ([Vx, Vy], Sxnew, Synew)
 
 from pso_utils import particle_swarm_optimization, particle_swarm_test, call_methods

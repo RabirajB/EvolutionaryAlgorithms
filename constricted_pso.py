@@ -6,18 +6,28 @@ import random
 import time as t
 from pso_utils import Particle, get_fitness, particle_no, iter_no, dim
 
-
 def get_velocity_position(gbest, pbest, p):
     # Method designed to find the position and the velocity attribute of the particle
+    
+    global particle_no
+    global dim
 
-    Vx = np.around(p.Vx + 2 * random.random() * (pbest.Sx - p.Sx) + 2 * random.random() * (gbest.Sx - p.Sx))
-    Vy = np.around(p.Vy + 2 * random.random() * (pbest.Sy - p.Sy) + 2 * random.random() * (gbest.Sy - p.Sy))
+    c1 = 2
+    c2 = 2
+
+    phi1 = c1 * random.random()
+    phi2 = c2 * random.random()
+    phi_res = phi1 + phi2
+    X = 2 / (2 - phi_res - math.sqrt(phi_res**2 - (4 * phi_res)))
+
+    Vx = np.around(X * (p.Vx + (phi1 * (pbest.Sx - p.Sx)) + phi2 * (gbest.Sx - p.Sx)))
+    Vy = np.around(X * (p.Vy + (phi1 * (pbest.Sy - p.Sy)) + phi2 * (gbest.Sy - p.Sy)))
     Sxnew = p.Sx + Vx
     Synew = p.Sy + Vy
+
     return ([Vx, Vy], Sxnew, Synew)
 
 from pso_utils import particle_swarm_optimization, particle_swarm_test, call_methods
-
 
 if __name__ == "__main__":
     n = 10
@@ -39,7 +49,7 @@ if __name__ == "__main__":
 
     min_pso = min(data_pso.keys())
 
-    fp = open('result_4_rand.txt', 'w')
+    fp = open('result_sapsomut.txt', 'w')
     fp.write("Size of the MST = " + str(mst_size) + '\n')
     fp.write('No. of Iterations :' + str(max_iter) + '\n')
     fp.write('PSO Min Wt :'+ str(min_pso) + '\n')
