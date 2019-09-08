@@ -26,6 +26,7 @@ def get_velocity_position(gbest, pbest, p):
 from pso_utils import particle_swarm_optimization, particle_swarm_test, call_methods
 
 if __name__ == "__main__":
+    # Essential parameters
     n = 10
     dim = 500
     max_iter = 25
