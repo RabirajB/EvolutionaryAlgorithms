@@ -1,8 +1,0 @@
-Size of the MST = 1260
-No. of Iterations :25
-PSO Min Wt :1169.0
-X Coordinates :[235. 402. 423. 499. 381. 454. 437. 105. 259. 376. 374.]
-Y Coordinates :[343.  91. 200. 450. 170. 171. 120. 145.  88. 221. 342.]
-No. of Steiner points :1
-Time Required :2.8758950233459473
-Error Ratio :0.9277777777777778
