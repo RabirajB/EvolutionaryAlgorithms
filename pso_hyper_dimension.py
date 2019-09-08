@@ -4,7 +4,7 @@ import prim_algorithm as pa
 import math
 import random
 import time as t
-from pso_utils import Particle, get_fitness, particle_no, iter_no, dim
+from pso_utils import Particle, get_fitness, particle_no, iter_no, dim, ControlInitializer
 
 
 def get_velocity_position(gbest, pbest, p):
@@ -21,31 +21,22 @@ from pso_utils import particle_swarm_optimization, particle_swarm_test, call_met
 
 if __name__ == "__main__":
     n = 10
-    Tx, Ty = np.load('terminal_point_{}_{}.npy'.format(str(dim), str(n)))
-    lenT = Tx.size
+    dim = 500
     max_iter = 25
-    data_pso = dict()
-
-    distancevector = gd.get_distancevector(np.copy(Tx), np.copy(Ty))
-    mst = pa.mst_prim(distancevector)
-    mst_size = pa.get_tree(distancevector)
-
-    for i in range(max_iter):
-        print('Iteration No :', i)
-        t1 = t.time()
-        res = call_methods(np.copy(Tx),np.copy(Ty),lenT, get_velocity_position)
-        t2 = t.time()
-        data_pso[res[0]] = (res[1], res[2], t2-t1)
-
-    min_pso = min(data_pso.keys())
-
-    fp = open('result_4_rand.txt', 'w')
-    fp.write("Size of the MST = " + str(mst_size) + '\n')
-    fp.write('No. of Iterations :' + str(max_iter) + '\n')
-    fp.write('PSO Min Wt :'+ str(min_pso) + '\n')
-    fp.write('X Coordinates :'+ str(data_pso[min_pso][0]) + '\n')
-    fp.write('Y Coordinates :'+ str(data_pso[min_pso][1]) + '\n')
-    fp.write('No. of Steiner points :'+ str(data_pso[min_pso][0].size - n) + '\n')
-    fp.write('Time Required :'+ str(data_pso[min_pso][2]) + '\n')
-    fp.write('Error Ratio :'+ str(min_pso/mst_size) + '\n')
-    fp.close()
+    
+    # File setup for the output
+    file_name = input('Enter the file name in which you want to save the result : ')
+    
+    # Preprocessing on file name to check its validity
+    split_name = file_name.split()
+    file_name = ''
+    for string in split_name:
+        file_name += string.capitalize()
+    if not '.txt' in file_name:
+        file_name += '.txt'
+    
+    # Initializing the Controler Object that initializes the Program Controler
+    control_init = ControlInitializer(n, dim, max_iter, get_velocity_position, file_name)
+    
+    # Controler is triggered to execute the complete program
+    control_init.run()

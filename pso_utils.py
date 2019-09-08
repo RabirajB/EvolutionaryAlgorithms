@@ -3,6 +3,7 @@ import gridgraphdemo as gd
 import prim_algorithm as pa
 import math
 import random
+import time as t
 
 # Global Variables
 particle_no = 150
@@ -156,3 +157,40 @@ def call_methods(Tx,Ty,lenT, func):
     pa.draw_gridgraph(Tx, Ty, mst,lenT,lenT)
 
     return return_set
+
+class ControlInitializer:
+    def __init__(self, n, dim, max_iter, func, file_name):
+        self.n = n
+        self.dim = dim
+        self.max_iter = max_iter
+        self.func = func
+        self.file_name = file_name
+
+    def run(self):
+
+        Tx, Ty = np.load('terminal_point_{}_{}.npy'.format(str(self.dim), str(self.n)))
+        lenT = Tx.size
+        data_pso = dict()
+
+        distancevector = gd.get_distancevector(np.copy(Tx), np.copy(Ty))
+        mst_size = pa.get_tree(distancevector)
+
+        for i in range(self.max_iter):
+            print('Iteration No :', i)
+            t1 = t.time()
+            res = call_methods(np.copy(Tx),np.copy(Ty),lenT, self.func)
+            t2 = t.time()
+            data_pso[res[0]] = (res[1], res[2], t2-t1)
+
+        min_pso = min(data_pso.keys())
+
+        fp = open(self.file_name, 'w')
+        fp.write("Size of the MST = " + str(mst_size) + '\n')
+        fp.write('No. of Iterations :' + str(self.max_iter) + '\n')
+        fp.write('PSO Min Wt :'+ str(min_pso) + '\n')
+        fp.write('X Coordinates :'+ str(data_pso[min_pso][0]) + '\n')
+        fp.write('Y Coordinates :'+ str(data_pso[min_pso][1]) + '\n')
+        fp.write('No. of Steiner points :'+ str(data_pso[min_pso][0].size - self.n) + '\n')
+        fp.write('Time Required :'+ str(data_pso[min_pso][2]) + '\n')
+        fp.write('Error Ratio :'+ str(min_pso/mst_size) + '\n')
+        fp.close()
