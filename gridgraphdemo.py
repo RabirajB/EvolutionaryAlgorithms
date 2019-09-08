@@ -67,15 +67,15 @@ def get_distancevector(Tx,Ty):
     plot.show()'''
 
 def figure_plot(x, y, destx, desty, a, b, lenTx,lenTy):
-    plot.scatter(x, y)
-    plot.scatter(destx, desty)
+    #plot.scatter(x, y)
+    #plot.scatter(destx, desty)
     if a < lenTx :
-        plot.plot (x, y,"ro")
+        plot.plot(x, y,"ro", label='Terminal Points')
     if b < lenTx:
-        plot.plot(destx, desty,"ro")
+        plot.plot(destx, desty,"ro", label='Terminal Points')
     if a>=lenTx:
-        plot.plot(x,y,"bs")
+        plot.plot(x,y,"bs", label='Steiner Points')
     if b >= lenTx:
-        plot.plot(destx,desty,"bs")
+        plot.plot(destx,desty,"bs", label='Steiner Points')
     plot.plot([x, destx], [y, y], color='black')
     plot.plot([destx, destx], [y, desty], color = 'black')

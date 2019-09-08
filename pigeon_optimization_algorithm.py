@@ -37,7 +37,14 @@ def pigeon_optimization_map_and_compass(fitnessbest, p, iteration):
     Xpnew = np.sum(Sxnew) // length # changes done
     Ypnew = np.sum(Synew) // length # changes done
 
-    if Xpnew < 0 or Xpnew > 500 or Ypnew < 0 or Ypnew > 500:
+    negatives = 0
+    ratio1 = 0.9
+    for i in range(len(Sxnew)):
+        if Sxnew[i] < 0 or Synew[i] < 0:
+            negatives = negatives + 1
+    ratio2 = negatives / len(Sxnew)
+    # if Xpnew < 0 or Xpnew > 500 or Ypnew < 0 or Ypnew > 500:
+    if ratio2 > ratio1:
         p.Sx = p.Sx
         p.Sy = p.Sy
         p.V = p.V
@@ -70,7 +77,7 @@ def calculate_sum_positionsX(pigeons):
     sumX,sumx = 0,0
     for i in range(len(pigeons)):
         sumx += pigeons[i].fitness
-        sumX += (pigeons[i].Xp)*pigeons[i].fitness
+        sumX += (pigeons[i].Xp)* pigeons[i].fitness
     return sumX,sumx
 
 def calculate_sum_positionsY(pigeons):
@@ -106,15 +113,17 @@ def pigeon_test(Tx, Ty):
         pigeon = Pigeon(Sx, Sy, 0, Xs, Ys,0)
         pigeons.append(pigeon)
 
-    for i in range(10):
+    for i in range(15):
 
         for j in range(len(pigeons)):
             mst = get_fitness(Tx, Ty, pigeons[j])
             pigeons[j].fitness = 1/mst
-            Rx = Tx[0:len(Tx) - lenTx]
-            Ry = Ty[0:len(Tx) - lenTy]
-            Tx = Tx[0:len(Tx) - len(Rx)]
-            Ty = Tx[0:len(Ty) - len(Ry)]
+            temp_len = Tx.size
+            Rx = Tx[0:temp_len - lenTx]
+            Ry = Ty[0:temp_len - lenTy]
+            len_Rx = Rx.size
+            Tx = Tx[0:temp_len - len_Rx]
+            Ty = Ty[0:temp_len - len_Rx]
             # Tx = Tx[0:len(Tx) - len(pigeons[j].Sx)]
             # print(Tx)
             # Ty = Ty[0:len(Ty) - len(pigeons[j].Sy)]
@@ -126,8 +135,8 @@ def pigeon_test(Tx, Ty):
             pigeon_optimization_map_and_compass(best_fitness, pigeons[j], i)
     pigeon_optimization_landmark(Tx,Ty,lenTx,lenTy,pigeons)
     pigeon_best = max(pigeons, key = lambda pigeon: pigeon.fitness)
-    print(pigeon_best.Sx)
-    print(pigeon_best.Sy)
+    #print(pigeon_best.Sx)
+    #print(pigeon_best.Sy)
     return pigeon_best
 
 def pigeon_optimization_landmark(Tx, Ty, lenTx, lenTy, pigeons):
@@ -153,10 +162,17 @@ def pigeon_optimization_landmark(Tx, Ty, lenTx, lenTy, pigeons):
             Xpnew = np.sum(pigeons[j].Sx) // len_S
             Ypnew = np.sum(pigeons[j].Sy) // len_S
 
-            if Xpnew < 0 or Xpnew > 500 or Ypnew < 0 or Ypnew > 500:
+            negatives = 0
+            ratio1 = 0.9
+            for k in range(len(Sxnew)):
+                if Sxnew[k] < 0 or Synew[k] < 0:
+                    negatives = negatives + 1
+            ratio2 = negatives / Sxnew.size
+            # if Xpnew < 0 or Xpnew > 500 or Ypnew < 0 or Ypnew > 500:
+            if ratio2 > ratio1:
                 pigeons[j].Sx = pigeons[j].Sx
                 pigeons[j].Sy = pigeons[j].Sy
-                pigeons[j].V = pigeons[j].V
+                pigeons[j].V  = pigeons[j].V
                 pigeons[j].Xp = pigeons[j].Xp
                 pigeons[j].Yp = pigeons[j].Yp
                 #pass
@@ -165,11 +181,13 @@ def pigeon_optimization_landmark(Tx, Ty, lenTx, lenTy, pigeons):
                 pigeons[j].Sy = Synew
                 pigeons[j].Xp = Xpnew
                 pigeons[j].Yp = Ypnew
-                pigeons[j].fitness = 1/get_fitness(Tx,Ty,pigeons[j])
-                Rx = Tx[0:len(Tx) - lenTx]
-                Ry = Ty[0:len(Ty) - lenTy]
-                Tx = Tx[0:len(Tx) - len(Rx)]
-                Ty = Ty[0:len(Ty) - len(Ry)]
+                pigeons[j].fitness = 1/get_fitness(Tx, Ty, pigeons[j])
+                temp_len = Tx.size
+                Rx = Tx[0:temp_len - lenTx]
+                Ry = Ty[0:temp_len - lenTy]
+                len_Rx = Rx.size
+                Tx = Tx[0:temp_len - len_Rx]
+                Ty = Ty[0:temp_len - len_Rx]
 
 def call_methods(Tx, Ty, lenTx, lenTy):
     # Tx = gd.get_xdata(0, 500, 10)
@@ -179,19 +197,21 @@ def call_methods(Tx, Ty, lenTx, lenTy):
     lenTy = len(Ty)
     '''
     # Calculating mST for PIO
-    print("X coordinates =", Tx)
-    print("Y coordinates =", Ty)
+    #print("X coordinates =", Tx)
+    #print("Y coordinates =", Ty)
     bestpigeon = pigeon_test(Tx, Ty)
-    Rx = Tx[0:len(Tx) - lenTx]
-    Ry = Ty[0:len(Ty) - lenTy]
-    Tx = Tx[0:len(Tx) - len(Rx)]
-    Ty = Ty[0:len(Ty) - len(Ry)]
+    temp_len = Tx.size
+    Rx = Tx[0:temp_len - lenTx]
+    Ry = Ty[0:temp_len - lenTy]
+    len_Rx = Rx.size
+    Tx = Tx[0:temp_len - len_Rx]
+    Ty = Ty[0:temp_len - len_Rx]
     # print("Updated X coordinates", Tx)
     # print("Updated Y coordinates", Ty)
-    print("X coordinates of best pigeon", bestpigeon.Sx)
+    '''print("X coordinates of best pigeon", bestpigeon.Sx)
     print("Y coordinates of best pigeon", bestpigeon.Sy)
     print("Updated X coordinates", Tx)
-    print("Updated Y Coordinates", Ty)
+    print("Updated Y Coordinates", Ty)'''
     count = 0
     for i in range(len(bestpigeon.Sx)):
         if bestpigeon.Sx[i] < min(Tx) or bestpigeon.Sx[i] > max(Tx):
@@ -204,15 +224,25 @@ def call_methods(Tx, Ty, lenTx, lenTy):
         Tx = np.append(Tx, np.floor(bestpigeon.Sx[i]))
         Ty = np.append(Ty, np.floor(bestpigeon.Sy[i]))
         count = count + 1
-    print("Updated X Coordinates", Tx)
-    print("Updated Y Coordinates", Ty)
+    #print("Updated X Coordinates", Tx)
+    #print("Updated Y Coordinates", Ty)
     distancevector = gd.get_distancevector(Tx, Ty)
     mst = pa.mst_prim(distancevector)
     mst_size = pa.get_tree(distancevector)
-    print("Size of Steiner Tree for PIO", mst_size)
+    #print("Size of Steiner Tree for PIO", mst_size)
     pa.draw_gridgraph(Tx, Ty, mst, lenTx, lenTy)
+    return_set = (mst_size, Tx, Ty)
     Tx = Tx[0:len(Tx) - count]
     Ty = Ty[0:len(Ty) - count]
-    print("Restored X Coordinates=", Tx)
+    '''print("Restored X Coordinates=", Tx)
     print("Restored Y Coordinates=", Ty)
-    print("End of PIO")
+    print("End of PIO")'''
+    return return_set
+
+if __name__ == '__main__':
+
+    dim = 500
+    n = 20
+    Tx, Ty = np.load("terminal_point_{}_{}.npy".format(str(dim), str(n)))
+    call_methods(Tx, Ty, Tx.size, Ty.size)
+
