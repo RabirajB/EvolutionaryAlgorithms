@@ -43,6 +43,8 @@ if __name__ == "__main__":
     file_name = ''
     for string in split_name:
         file_name += string.capitalize()
+    if file_name == '':
+        file_name = 'sapsomut_result_'+str(dim)+'_'+str(n)
     if not '.txt' in file_name:
         file_name += '.txt'
     
