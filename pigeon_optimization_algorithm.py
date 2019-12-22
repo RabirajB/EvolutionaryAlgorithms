@@ -120,7 +120,6 @@ def pigeon_test(Tx, Ty):
             pigeons[j].fitness = 1/mst
             temp_len = Tx.size
             Rx = Tx[0:temp_len - lenTx]
-            Ry = Ty[0:temp_len - lenTy]
             len_Rx = Rx.size
             Tx = Tx[0:temp_len - len_Rx]
             Ty = Ty[0:temp_len - len_Rx]
@@ -184,7 +183,7 @@ def pigeon_optimization_landmark(Tx, Ty, lenTx, lenTy, pigeons):
                 pigeons[j].fitness = 1/get_fitness(Tx, Ty, pigeons[j])
                 temp_len = Tx.size
                 Rx = Tx[0:temp_len - lenTx]
-                Ry = Ty[0:temp_len - lenTy]
+                
                 len_Rx = Rx.size
                 Tx = Tx[0:temp_len - len_Rx]
                 Ty = Ty[0:temp_len - len_Rx]
@@ -202,7 +201,7 @@ def call_methods(Tx, Ty, lenTx, lenTy):
     bestpigeon = pigeon_test(Tx, Ty)
     temp_len = Tx.size
     Rx = Tx[0:temp_len - lenTx]
-    Ry = Ty[0:temp_len - lenTy]
+
     len_Rx = Rx.size
     Tx = Tx[0:temp_len - len_Rx]
     Ty = Ty[0:temp_len - len_Rx]

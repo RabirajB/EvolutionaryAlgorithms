@@ -89,27 +89,25 @@ def mst_prim(distancevector):
 
 def get_tree(distancevector):
     mst = mst_prim(distancevector)
-    #print("Printing")
     i = 1
     mst_size = 0
     while i < len(mst):
-        #u = mst[i].parent
-        #print(u.vertex_id, "->", mst[i].vertex_id)
         mst_size += mst[i].key
         i = i+1
 
     return mst_size
 
 def draw_gridgraph(Tx,Ty,mst,lenTx,lenTy):
-    '''i = 1
+    i = 1
+    term_pts, str_pts = [None, None]
     while i in range(len(mst)):
         u = mst[i].parent
         Sx = Tx[u.vertex_id]
         Sy = Ty[u.vertex_id]
         destx = Tx[mst[i].vertex_id]
         desty = Ty[mst[i].vertex_id]
-        gd.figure_plot(Sx, Sy, destx, desty, u.vertex_id, mst[i].vertex_id,lenTx,lenTy)
+        term_pts, str_pts = gd.figure_plot(Sx, Sy, destx, desty, u.vertex_id, mst[i].vertex_id,lenTx,lenTy)
         i = i+1
-    plot.show()'''
-    pass
+    plot.legend((term_pts, str_pts), ('Terminal Points', 'Steiner Points'))
+    plot.show()
     

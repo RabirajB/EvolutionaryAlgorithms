@@ -17,3 +17,9 @@ terminal_point_500_80.npy
 terminal_point_500_90.npy
 terminal_point_500_100.npy
 test_result.txt
+abstract_data_ploter.py
+tempCodeRunnerFile.py
+__pycache__/gradient_utils.cpython-36.pyc
+__pycache__/gridgraphdemo.cpython-36.pyc
+__pycache__/prim_algorithm.cpython-36.pyc
+__pycache__/pso_utils.cpython-36.pyc

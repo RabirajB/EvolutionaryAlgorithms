@@ -7,7 +7,7 @@ import time as t
 
 # Global Variables
 particle_no = 150
-iter_no = 15
+iter_no = 3
 dim = 500
 get_velocity_position = None
 
@@ -44,14 +44,6 @@ def get_fitness(Tx, Ty, particle):
     objectivefitness = pa.get_tree(distancevector)
     return objectivefitness
 
-'''def get_velocity_position(gbest, pbest, p):
-    Vx = p.V + 2 * random.randint(0,1) * (pbest - p.Xp) + 2 * random.randint(0, 1) * (gbest - p.Xp)
-    Vy = p.V + 2 * random.randint(0,1) * (pbest - p.Yp) + 2 * random.randint(0, 1) * (gbest - p.Yp)
-    Vnew = (Vx + Vy) // 2
-    Sxnew = p.Sx + Vx
-    Synew = p.Sy + Vy
-    return (Vnew, Sxnew, Synew)'''
-
 def particle_swarm_optimization(Tx, Ty, gbest, p, pbest):
     
     # Method for particle Swarm Optimization test
@@ -77,16 +69,8 @@ def particle_swarm_optimization(Tx, Ty, gbest, p, pbest):
         p.Vy = Vnew[1]
         p.fitness = get_fitness(np.copy(Tx), np.copy(Ty), p)
 
-def particle_swarm_test(Tx, Ty, lenT):
-
-    # Method responsible for the controlling of the whole of the PSO Algorithm
-    
-    particles = [] # List that stores all the particles
+def create_particles(Tx, Ty, len_S, particles):
     global particle_no # Global Variables declared at the begening of the program
-    global iter_no # Global Variables declared at the begening of the program
-    len_S = lenT - 2 # Total number of Steiner points is total Terminal points - 2
-    pbest = Particle(fitness=math.inf) # Initialize the Pbest particle
-    gbest = Particle(fitness=math.inf) # Initialize the Gbest particle
 
     # Creating and initiating the Particles
     for _ in range(particle_no):
@@ -94,9 +78,23 @@ def particle_swarm_test(Tx, Ty, lenT):
         Sx = gd.get_xdata(0, 500, len_S)
         Sy = gd.get_ydata(0, 500, len_S)
         
-        particle = Particle(Sx, Sy, np.zeros(len_S))
+        particle = Particle(Sx, Sy)
         particle.fitness = get_fitness(np.copy(Tx), np.copy(Ty), particle)
         particles.append(particle)
+
+def particle_swarm_test(Tx, Ty, lenT, create_particles_flag=True):
+
+    # Method responsible for the controlling of the whole of the PSO Algorithm
+    
+    particles = [] # List that stores all the particles
+    global iter_no # Global Variables declared at the begening of the program
+    len_S = lenT - 2 # Total number of Steiner points is total Terminal points - 2
+    pbest = Particle(fitness=math.inf) # Initialize the Pbest particle
+    gbest = Particle(fitness=math.inf) # Initialize the Gbest particle
+    
+    # Creating and initiating the Particles on requirement
+    if create_particles_flag:
+        create_particles(Tx, Ty, len_S, particles)
 
     # Running the PSO
     for _ in range(iter_no):
