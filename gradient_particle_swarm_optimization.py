@@ -1,9 +1,7 @@
 import numpy as np
 import gridgraphdemo as gd
 import prim_algorithm as pa
-import math
 import random
-import time as t
 from gradient_utils import *
 
 def get_velocity_position_function(gbest, pbest, p):
@@ -19,9 +17,9 @@ def get_velocity_position_function(gbest, pbest, p):
 
 if __name__ == "__main__":
     # Essential parameters
-    n = 10
+    n = 20
     dim = 500
-    max_iter = 30
+    max_iter = 25
     
     # File setup for the output
     file_name = input('Enter the file name in which you want to save the result : ')

@@ -159,5 +159,5 @@ def call_methods(Tx, Ty, lenTx, lenTy):
     mst_size = pa.get_tree(distancevector)
     #print("Size of Steiner Tree for Constricted-PSO", mst_size)
     return_set = (mst_size, Tx, Ty)
-    pa.draw_gridgraph(Tx, Ty, mst,lenTx,lenTy)
+    #pa.draw_gridgraph(Tx, Ty, mst,lenTx,lenTy)
     return return_set

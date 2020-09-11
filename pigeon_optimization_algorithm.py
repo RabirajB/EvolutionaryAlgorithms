@@ -229,7 +229,7 @@ def call_methods(Tx, Ty, lenTx, lenTy):
     mst = pa.mst_prim(distancevector)
     mst_size = pa.get_tree(distancevector)
     #print("Size of Steiner Tree for PIO", mst_size)
-    pa.draw_gridgraph(Tx, Ty, mst, lenTx, lenTy)
+    #pa.draw_gridgraph(Tx, Ty, mst, lenTx, lenTy)
     return_set = (mst_size, Tx, Ty)
     Tx = Tx[0:len(Tx) - count]
     Ty = Ty[0:len(Ty) - count]
