@@ -1,6 +1,6 @@
 import prim_algorithm as pa
 import gridgraphdemo as gd
-import invasive_weed_optimization as iwo
+#import invasive_weed_optimization as iwo
 import pigeon_optimization_algorithm as poa
 import particle_swarm_optimization as pso
 import constriction_factor_pso as cpso
@@ -14,7 +14,7 @@ from os import open
 #lenTx = len(Tx)
 #lenTy = len(Ty)
 dim = 500
-n = 50
+n = 10
 Tx, Ty = np.load('terminal_point_{}_{}.npy'.format(str(dim), str(n)))
 lenTx = Tx.size
 lenTy = lenTx
@@ -31,7 +31,7 @@ data_pso = dict()
 data_cpso = dict()
 data_wpso = dict()
 
-max_iter = 2
+max_iter = 5
 
 for i in range(max_iter):
     print('Iteration No :', i)
@@ -65,21 +65,36 @@ print('Y Coordinates :', data_pio[min_pio][1])
 print('No. of Steiner points :', data_pio[min_pio][0].size - n)
 print('Time Required :', data_pio[min_pio][2])
 print('Error Ratio :', min_pio/mst_size)
+distancevector = gd.get_distancevector(data_pio[min_pio][0], data_pio[min_pio][1])
+mst = pa.mst_prim(distancevector)
+pa.draw_gridgraph(data_pio[min_pio][0], data_pio[min_pio][1], mst, lenTx, lenTy)
+
 print('PSO Min Wt :', min_pso)
 print('X Coordinates :', data_pso[min_pso][0])
 print('Y Coordinates :', data_pso[min_pso][1])
 print('No. of Steiner points :', data_pso[min_pso][0].size - n)
 print('Time Required :', data_pso[min_pso][2])
 print('Error Ratio :', min_pso/mst_size)
+distancevector = gd.get_distancevector(data_pso[min_pso][0], data_pso[min_pso][1])
+mst = pa.mst_prim(distancevector)
+pa.draw_gridgraph(data_pso[min_pso][0], data_pso[min_pso][1], mst, lenTx, lenTy)
+
 print('CPSO Min Wt :', min_cpso)
 print('X Coordinates :', data_cpso[min_cpso][0])
 print('Y Coordinates :', data_cpso[min_cpso][1])
 print('No. of Steiner points :', data_cpso[min_cpso][0].size - n)
 print('Time Required :', data_cpso[min_cpso][2])
 print('Error Ratio :', min_cpso/mst_size)
+distancevector = gd.get_distancevector(data_cpso[min_cpso][0], data_cpso[min_cpso][1])
+mst = pa.mst_prim(distancevector)
+pa.draw_gridgraph(data_cpso[min_cpso][0], data_cpso[min_cpso][1], mst, lenTx, lenTy)
+
 print('WPSO Min Wt :', min_wpso)
 print('X Coordinates :', data_wpso[min_wpso][0])
 print('Y Coordinates :', data_wpso[min_wpso][1])
 print('No. of Steiner points :', data_wpso[min_wpso][0].size - n)
 print('Time Required :', data_wpso[min_wpso][2])
 print('Error Ratio :', min_wpso/mst_size)
+distancevector = gd.get_distancevector(data_wpso[min_wpso][0], data_wpso[min_wpso][1])
+mst = pa.mst_prim(distancevector)
+pa.draw_gridgraph(data_wpso[min_wpso][0], data_wpso[min_wpso][1], mst, lenTx, lenTy)
